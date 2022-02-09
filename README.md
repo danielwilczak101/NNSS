@@ -12,4 +12,4 @@ https://www.researchgate.net/publication/332046885_Synthesis_optical_imaging_and
 Another paper using this dataset: https://pubs.rsc.org/en/content/articlelanding/2019/SC/C8SC03077D#!divAbstract
 
  
-The goal for this dataset would be to predict the absorption spectra from the sample images. Let me know if you have any questions!
+The goal for this dataset would be to predict the absorption spectra from the sample images. 
