@@ -62,6 +62,7 @@ test_labels = np.vstack([to_coefs(label, degree) for label in test_labels])
 print("Creating/Training models...")
 number_of_models = 2
 for index in range(number_of_models):
+    model = models.Sequential()
 
     # Dense
     model.add(layers.Flatten(), activation='relu', input_shape=(64, 64, 3))
@@ -75,4 +76,3 @@ for index in range(number_of_models):
 
     # Save
     model.save(str(index) + '.h5')
-    # Empty the model variable to conserve ram.
