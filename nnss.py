@@ -65,7 +65,7 @@ for index in range(number_of_models):
     model = models.Sequential()
 
     # Dense
-    model.add(layers.Flatten(), activation='relu', input_shape=(64, 64, 3))
+    model.add(layers.Flatten(), input_shape=(64, 64, 3))
     model.add(layers.Dense(1024, activation='relu'))
     model.add(layers.Dense(17))
 
