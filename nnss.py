@@ -8,7 +8,7 @@ import urllib.request
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
-import h5py as hf
+import h5py
 import os
 import os.path
 
@@ -34,6 +34,8 @@ if os.path.exists("dataset_raw.h5") == False:
   download("dataset_raw.h5","https://bit.ly/34xI5LW")
   download("training_raw.txt","https://bit.ly/3rpWZwP")
   download("test_raw.txt","https://bit.ly/34xOneu")
+
+hf = h5py.File('dataset_raw.h5', 'r')
 
 images = hf['images']
 labels = hf['spectra']
