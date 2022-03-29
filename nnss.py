@@ -8,7 +8,7 @@ import urllib.request
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
-import h5py
+import h5py as hf
 import os
 import os.path
 
@@ -29,7 +29,7 @@ def to_poly(coefs):
     degree = len(coefs) - 1
     return Polynomial(coefs / range(1, degree + 2) * (degree + 1) ** 2, domain=[0, 219], window=[-1, 1])
 
-
+print("Downloading...")
 if os.path.exists("dataset_raw.h5") == False:
   download("dataset_raw.h5","https://bit.ly/34xI5LW")
   download("training_raw.txt","https://bit.ly/3rpWZwP")
@@ -38,6 +38,7 @@ if os.path.exists("dataset_raw.h5") == False:
 images = hf['images']
 labels = hf['spectra']
 
+print("Splitting...")
 train_images, test_images, train_labels, test_labels = train_test_split(
     images,
     labels,
@@ -45,12 +46,14 @@ train_images, test_images, train_labels, test_labels = train_test_split(
     test_size = 0.1
     )
 
+print("Data Augmentation.")
 degree = 16
 train_labels = np.vstack([to_coefs(label, degree) for label in train_labels])
 test_labels = np.vstack([to_coefs(label, degree) for label in test_labels])
 
-number_of_models = 2
 
+print("Creating/Training models...")
+number_of_models = 2
 for index in range(number_of_models):
 
   # Dense
