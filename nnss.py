@@ -12,28 +12,33 @@ import h5py
 import os
 import os.path
 
-def download(file_name, url): 
+
+def download(file_name, url):
     urllib.request.urlretrieve(url, file_name)
+
 
 def to_coefs(labels, degree):
     """Labels -> Coefficients."""
     return Polynomial.fit(range(220), labels, degree).coef * range(1, degree + 2) / (degree + 1) ** 2
+
 
 def to_labels(coefs):
     """Coefficients -> Labels."""
     poly = to_poly(coefs)
     return poly(range(220))
 
+
 def to_poly(coefs):
     """Coefficients -> Polynomial, for graphing."""
     degree = len(coefs) - 1
     return Polynomial(coefs / range(1, degree + 2) * (degree + 1) ** 2, domain=[0, 219], window=[-1, 1])
 
+
 print("Downloading...")
 if os.path.exists("dataset_raw.h5") == False:
-  download("dataset_raw.h5","https://bit.ly/34xI5LW")
-  download("training_raw.txt","https://bit.ly/3rpWZwP")
-  download("test_raw.txt","https://bit.ly/34xOneu")
+    download("dataset_raw.h5", "https://bit.ly/34xI5LW")
+    download("training_raw.txt", "https://bit.ly/3rpWZwP")
+    download("test_raw.txt", "https://bit.ly/34xOneu")
 
 hf = h5py.File('dataset_raw.h5', 'r')
 
@@ -45,8 +50,8 @@ train_images, test_images, train_labels, test_labels = train_test_split(
     images,
     labels,
     shuffle=False,
-    test_size = 0.1
-    )
+    test_size=0.1
+)
 
 print("Data Augmentation.")
 degree = 16
@@ -58,15 +63,16 @@ print("Creating/Training models...")
 number_of_models = 2
 for index in range(number_of_models):
 
-  # Dense
-  model.add(layers.Flatten(), activation='relu', input_shape=(64, 64, 3))
-  model.add(layers.Dense(1024, activation='relu'))
-  model.add(layers.Dense(17))
+    # Dense
+    model.add(layers.Flatten(), activation='relu', input_shape=(64, 64, 3))
+    model.add(layers.Dense(1024, activation='relu'))
+    model.add(layers.Dense(17))
 
-  # Complile and fit
-  model.compile(optimizer=tf.optimizers.Adam(0.001), loss='mse', metrics=['mse', "mae", "mape"])
-  model.fit(train_images, train_labels, epochs=5)
+    # Complile and fit
+    model.compile(optimizer=tf.optimizers.Adam(0.001),
+                  loss='mse', metrics=['mse', "mae", "mape"])
+    model.fit(train_images, train_labels, epochs=5)
 
-   # Save
-  model.save(str(index) + '.h5')
-  # Empty the model variable to conserve ram.
+    # Save
+    model.save(str(index) + '.h5')
+    # Empty the model variable to conserve ram.
