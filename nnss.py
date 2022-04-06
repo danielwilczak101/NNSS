@@ -3,6 +3,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 from numpy.polynomial import Polynomial
+from functions import download, to_coefs
+import time
 
 import urllib.request
 import tensorflow as tf
@@ -13,34 +15,13 @@ import os
 import os.path
 
 
-def download(file_name, url):
-    urllib.request.urlretrieve(url, file_name)
-
-
-def to_coefs(labels, degree):
-    """Labels -> Coefficients."""
-    return Polynomial.fit(range(220), labels, degree).coef * range(1, degree + 2) / (degree + 1) ** 2
-
-
-def to_labels(coefs):
-    """Coefficients -> Labels."""
-    poly = to_poly(coefs)
-    return poly(range(220))
-
-
-def to_poly(coefs):
-    """Coefficients -> Polynomial, for graphing."""
-    degree = len(coefs) - 1
-    return Polynomial(coefs / range(1, degree + 2) * (degree + 1) ** 2, domain=[0, 219], window=[-1, 1])
-
-
 print("Downloading...")
-if os.path.exists("dataset_raw.h5") == False:
+if os.path.exists("dataset/dataset_raw.h5") == False:
     download("dataset_raw.h5", "https://bit.ly/34xI5LW")
     download("training_raw.txt", "https://bit.ly/3rpWZwP")
     download("test_raw.txt", "https://bit.ly/34xOneu")
 
-hf = h5py.File('dataset_raw.h5', 'r')
+hf = h5py.File('dataset/dataset_raw.h5', 'r')
 
 images = hf['images']
 labels = hf['spectra']
@@ -58,6 +39,10 @@ degree = 16
 train_labels = np.vstack([to_coefs(label, degree) for label in train_labels])
 test_labels = np.vstack([to_coefs(label, degree) for label in test_labels])
 
+overall_history = []
+
+print("Start timing:")
+start = time.time()
 
 print("Creating/Training models...")
 number_of_models = 2
@@ -71,8 +56,14 @@ for index in range(number_of_models):
 
     # Complile and fit
     model.compile(optimizer=tf.optimizers.Adam(0.001),
-                  loss='mse', metrics=['mse', "mae", "mape"])
-    model.fit(train_images, train_labels, epochs=5)
-
+                  loss='mse', metrics=["mae", tf.keras.metrics.RootMeanSquaredError()])
+    history = model.fit(train_images, train_labels, epochs=2)
+    overall_history.append([history.history])
     # Save
     model.save(str(index) + '.h5')
+
+end = time.time()
+print(f"Elapsed time: {end - start}")
+
+print("Overall history:")
+print(overall_history)
