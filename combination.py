@@ -26,11 +26,13 @@ for id, combination in enumerate(combinations):
 
     if old_training_split is not current_training_split:
         print(
-            f"Changing split data old:{old_training_split} new:{combination[6]}")
+            f"Change split data old: {old_training_split} new: {combination[6]}")
         old_training_split = current_training_split
 
+    if current_poly == 0:
+        pass
     if old_poly is not current_poly:
-        print(f"Changing poly count old:{old_poly} new:{combination[0]}")
+        print(f"Change poly count old: {old_poly} new: {combination[0]}")
         old_poly = current_poly
 
 
