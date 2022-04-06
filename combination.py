@@ -24,12 +24,12 @@ for id, combination in enumerate(combinations):
     epochs = combination[5]
     current_training_split = combination[6]
 
-    if old_training_split != current_training_split:
+    if old_training_split is not current_training_split:
         print(
             f"Changing split data old:{old_training_split} new:{combination[6]}")
         old_training_split = current_training_split
 
-    if old_poly != current_poly:
+    if old_poly is not current_poly:
         print(f"Changing poly count old:{old_poly} new:{combination[0]}")
         old_poly = current_poly
 
