@@ -27,7 +27,6 @@ train_images, test_images, train_labels, test_labels = train_test_split(
     labels,
     shuffle=False,
     test_size=0.1,
-
 )
 
 plt.plot(train_labels[1], label="Actual")

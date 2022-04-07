@@ -117,21 +117,20 @@ class Ensemble:
     def run(self):
 
         for id, combination in enumerate(self.combinations):
-            if id < 50:
-                split = combination[0]
-                poly_aug = combination[1]
-                poly_degree = combination[2]
-                networks = combination[3]
-                layers = combination[4]
-                neurons = combination[5]
-                epochs = combination[6]
+            split = combination[0]
+            poly_aug = combination[1]
+            poly_degree = combination[2]
+            networks = combination[3]
+            layers = combination[4]
+            neurons = combination[5]
+            epochs = combination[6]
 
-                self.check_split(split)
-                self.check_poly_aug(poly_aug)
-                self.check_poly_degree(poly_degree, poly_aug)
+            self.check_split(split)
+            self.check_poly_aug(poly_aug)
+            self.check_poly_degree(poly_degree, poly_aug)
 
-                data = self.model(id, poly_aug, poly_degree,
-                                  networks, layers, neurons, epochs)
+            data = self.model(id, poly_aug, poly_degree,
+                              networks, layers, neurons, epochs)
 
 
 ensemble = Ensemble()
