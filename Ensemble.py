@@ -75,9 +75,11 @@ class Ensemble:
             networks: int, layers: int, neurons: int, epochs: int,
             images=None, labels=None):
 
+        # Save the parameters to the database
+
         for index in range(networks):
             # used for identifying what model this is.
-            model_id = f"model {id}-{index}"
+            model_id = f"{id}-{index}"
 
             # Start log timer
             start = time()
@@ -87,7 +89,7 @@ class Ensemble:
 
             # Generate the models layers
             for _ in range(layers):
-                model.append([f"Layer Neurons:{neurons}"])
+                model.append([f"Dense Neurons:{neurons}"])
 
             if poly_aug == 0:
                 # For non poly augmented data
@@ -102,38 +104,34 @@ class Ensemble:
             model.append(elapse_time)
             # The model produces the data below for each model.
 
-            print(model)
+            # Save the model
+            open("models/"+model_id+".txt", "x")
 
-            model_data = [{
-                'loss': [12.675312042236328, 12.444961547851562],
-                'mae': [1.168357491493225, 1.110966444015503],
-                'root_mean_squared_error': [3.5602402687072754, 3.52774715423584]
+            # Save the epoch information to the epoch table
+            data = [{
+                'loss': [12.675312042236328]*epochs,
+                'mae': [1.168357491493225]*epochs,
+                'root_mean_squared_error': [3.5602402687072754]*epochs
             }]
 
     def run(self):
 
-        network_count = 0
-
         for id, combination in enumerate(self.combinations):
+            if id < 50:
+                split = combination[0]
+                poly_aug = combination[1]
+                poly_degree = combination[2]
+                networks = combination[3]
+                layers = combination[4]
+                neurons = combination[5]
+                epochs = combination[6]
 
-            print(combination)
-            split = combination[0]
-            poly_aug = combination[1]
-            poly_degree = combination[2]
-            networks = combination[3]
-            network_count += networks
-            layers = combination[4]
-            neurons = combination[5]
-            epochs = combination[6]
+                self.check_split(split)
+                self.check_poly_aug(poly_aug)
+                self.check_poly_degree(poly_degree, poly_aug)
 
-            self.check_split(split)
-            self.check_poly_aug(poly_aug)
-            self.check_poly_degree(poly_degree, poly_aug)
-
-            self.model(id, poly_aug, poly_degree,
-                       networks, layers, neurons, epochs)
-
-        print(network_count)
+                data = self.model(id, poly_aug, poly_degree,
+                                  networks, layers, neurons, epochs)
 
 
 ensemble = Ensemble()
