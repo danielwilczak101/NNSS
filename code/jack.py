@@ -1,6 +1,6 @@
 from tensorflow.keras import datasets, layers, models
 from sklearn.model_selection import train_test_split
-from functions import download, to_coefs
+from code.functions import download, to_coefs
 import time
 
 import tensorflow as tf

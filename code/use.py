@@ -2,7 +2,7 @@
 from tensorflow.keras import datasets, layers, models
 from sklearn.model_selection import train_test_split
 from numpy.polynomial import Polynomial
-from functions import to_labels, to_coefs
+from code.functions import to_labels, to_coefs
 
 import tensorflow as tf
 import matplotlib.pyplot as plt

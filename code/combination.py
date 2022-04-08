@@ -1,6 +1,6 @@
 import h5py
 import itertools
-from functions import generate_combinations
+from code.functions import generate_combinations
 from sklearn.model_selection import train_test_split
 
 print("Downloading files")
