@@ -34,33 +34,23 @@ conn = engine.connect()
 
 
 class Ensemble:
+    """Main class for all ensembled functionality."""
 
-    def __init__(self):
-        self.split = [.2]
-        self.poly_aug = [0, 1]
-        self.poly_degree = [5, 8, 11]
-        self.network = [1, 5, 10]
-        self.layers = [1, 2, 3]
-        self.neuron = [256, 512, 1028]
-        self.epochs = [2, 4, 6]
-
-        # Used for identifying the model
-        self.id = 0
+    def __init__(self, split=None, poly_aug=None, poly_degree=None, network=None, layers=None, neuron=None, epochs=None):
+        self.combinations = list(itertools.product(*[
+            split,
+            poly_aug,
+            poly_degree,
+            network,
+            layers,
+            neuron,
+            epochs,
+        ]))
 
         # Used as trigger for when to change the dataset
         self.current_split = None
         self.current_poly = None
         self.current_poly_aug = None
-
-        self.combinations = list(itertools.product(*[
-            self.split,
-            self.poly_aug,
-            self.poly_degree,
-            self.network,
-            self.layers,
-            self.neuron,
-            self.epochs,
-        ]))
 
         self.images = None
         self.labels = None
@@ -196,5 +186,14 @@ class Ensemble:
                            networks, layers, neurons, epochs)
 
 
-ensemble = Ensemble()
+ensemble = Ensemble(
+    split=[.2],
+    poly_aug=[0, 1],
+    poly_degree=[5, 8, 11],
+    network=[1, 5, 10],
+    layers=[1, 2, 3],
+    neuron=[256, 512, 1028],
+    epochs=[2, 4, 6]
+)
+
 ensemble.run()
