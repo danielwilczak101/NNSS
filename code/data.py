@@ -9,10 +9,9 @@ data = [
 data = data[0][0]
 
 epochs = 2
-epoch_data = []
 
-for element in range(epochs):
-    for index, key in enumerate(data):
-        epoch_data.append(data[key][element])
-    print(epoch_data[0])
-    epoch_data = []
+elapsed_time = [0.01] * epochs
+
+data.update({"elapsed_time": elapsed_time})
+
+print(data)
