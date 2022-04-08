@@ -1,8 +1,36 @@
-import itertools
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Float, Boolean, ForeignKey
 from math import comb
 from time import time
-
 from numpy import poly
+
+import itertools
+
+engine = create_engine('sqlite:///database.db')
+meta = MetaData()
+table_parameters = Table(
+    'parameters', meta,
+    Column('parameters_id', Integer, primary_key=True),
+    Column('split', Float),
+    Column('poly_aug', Boolean),
+    Column('poly_degree', Integer),
+    Column('network', Integer),
+    Column('layers', Integer),
+    Column('neurons', Integer),
+    Column('epochs', Integer)
+)
+
+table_epochs = Table(
+    'epochs', meta,
+    Column('id', Integer, primary_key=True),
+    Column('parameters_id', Integer, ForeignKey('parameters.parameters_id')),
+    Column('model_id', Integer),
+    Column('mean_square_error', Float),
+    Column('mean_absolute_error', Float),
+    Column('root_mean_squared_error', Float),
+    Column('elapsed_time', Float)
+)
+meta.create_all(engine)
+conn = engine.connect()
 
 
 class Ensemble:
@@ -11,7 +39,7 @@ class Ensemble:
         self.split = [.2]
         self.poly_aug = [0, 1]
         self.poly_degree = [5, 8, 11]
-        self.network = [1, 3, 7, 10]
+        self.network = [1, 5, 10]
         self.layers = [1, 2, 3]
         self.neuron = [256, 512, 1028]
         self.epochs = [2, 4, 6]
@@ -70,7 +98,7 @@ class Ensemble:
                 self.current_poly = degree
 
     def model(
-            self, id: int,
+            self, parameter_id: int,
             poly_aug: bool, poly_degree: int,
             networks: int, layers: int, neurons: int, epochs: int,
             images=None, labels=None):
@@ -79,7 +107,7 @@ class Ensemble:
 
         for index in range(networks):
             # used for identifying what model this is.
-            model_id = f"{id}-{index}"
+            model_id = f"{parameter_id}-{index}"
 
             # Start log timer
             start = time()
@@ -111,26 +139,61 @@ class Ensemble:
             data = [{
                 'loss': [12.675312042236328]*epochs,
                 'mae': [1.168357491493225]*epochs,
-                'root_mean_squared_error': [3.5602402687072754]*epochs
+                'root_mean_squared_error': [3.5602402687072754]*epochs,
+                'elapsed_time': [elapse_time]*epochs
             }]
 
+            self.save_epoch(data, epochs, parameter_id, index)
+
+    def save_epoch(self, data, epochs, parameter_id, model_id):
+        """Saves the data the model creates after training a single model"""
+        data = data[0]
+        epoch_data = []
+
+        for element in range(epochs):
+            for key in data:
+                epoch_data.append(data[key][element])
+
+            insert = table_epochs.insert().values(
+                parameters_id=parameter_id,
+                model_id=model_id,
+                mean_square_error=epoch_data[0],
+                mean_absolute_error=epoch_data[1],
+                root_mean_squared_error=epoch_data[2],
+                elapsed_time=epoch_data[3])
+
+            conn.execute(insert)
+            epoch_data = []
+
+    def save_parameters(self, split, poly_aug, poly_degree, network, layers, neurons, epochs):
+        """Saves the data the model creates after training a single model"""
+
+        return (conn.execute(table_parameters.insert().values(
+            split=split,
+            poly_aug=poly_aug,
+            poly_degree=poly_degree,
+            network=network,
+            layers=layers,
+            neurons=neurons,
+            epochs=epochs
+        )).inserted_primary_key)[0]
+
     def run(self):
-
+        """Runs the entire ensembled research based on preset parameters."""
         for id, combination in enumerate(self.combinations):
-            split = combination[0]
-            poly_aug = combination[1]
-            poly_degree = combination[2]
-            networks = combination[3]
-            layers = combination[4]
-            neurons = combination[5]
-            epochs = combination[6]
+            if id < 2:
+                split, poly_aug, poly_degree, networks, layers, neurons, epochs = combination
 
-            self.check_split(split)
-            self.check_poly_aug(poly_aug)
-            self.check_poly_degree(poly_degree, poly_aug)
+                self.check_split(split)
+                self.check_poly_aug(poly_aug)
+                self.check_poly_degree(poly_degree, poly_aug)
 
-            data = self.model(id, poly_aug, poly_degree,
-                              networks, layers, neurons, epochs)
+                parameter_id = self.save_parameters(split, poly_aug,
+                                                    poly_degree, networks,
+                                                    layers, neurons, epochs)
+
+                self.model(parameter_id, poly_aug, poly_degree,
+                           networks, layers, neurons, epochs)
 
 
 ensemble = Ensemble()
