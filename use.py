@@ -2,7 +2,7 @@
 from tensorflow.keras import datasets, layers, models
 from sklearn.model_selection import train_test_split
 from numpy.polynomial import Polynomial
-from code.functions import to_labels, to_coefs
+from functions import to_labels, to_coefs
 
 import tensorflow as tf
 import matplotlib.pyplot as plt
@@ -12,7 +12,7 @@ import os
 import os.path
 
 
-number_of_models = 10
+number_of_models = 2
 
 print("Loading")
 hf = h5py.File('dataset_raw.h5', 'r')
@@ -39,15 +39,21 @@ test_labels = np.vstack([to_coefs(label, degree) for label in test_labels])
 
 
 print("Using the models")
-models = [tf.keras.models.load_model(str(index)+'.h5')
+models = [tf.keras.models.load_model(f"{index}-0.h5")
           for index in range(number_of_models)]
 
 
 for index, model in enumerate(models):
-    prediction = model.predict(train_images[1].reshape(1, 64, 64, 3))
+    prediction = model(train_images[1].reshape(1, 64, 64, 3))[0]
     if index == 0:
         plt.plot(to_labels(train_labels[1]), label="Augmented Actual")
-    plt.plot(to_labels(prediction[0]), label=f"Model #{index} Prediction")
+    plt.plot(to_labels(prediction), label=f"Model #{index} Prediction")
+
+plt.plot(train_labels[0], label="Actual")
+
+for index, model in enumerate(models):
+    prediction = model(train_images[1].reshape(1, 64, 64, 3))[0]
+    plt.plot(prediction, label=f"Model #{index} Prediction")
 
 
 plt.legend()

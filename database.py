@@ -51,7 +51,7 @@ class Database:
         ))
 
     def save_parameters(self, split, poly_aug, poly_degree, network, layers, neurons, epochs):
-        """Saves the data the model creates after training a single model"""
+        """Creates the parameters id that the epoch data refrence to the overal ensembled model."""
 
         return (self.conn.execute(self.table_parameters.insert().values(
             split=split,
