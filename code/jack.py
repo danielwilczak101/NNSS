@@ -29,23 +29,6 @@ train_images, test_images, train_labels, test_labels = train_test_split(
     test_size=0.1
 )
 
-poly_labels = {}
-
-
-def get_poly_labels(degree: int):
-    if degree not in poly_labels:
-        poly_labels.clear()
-        train_poly = np.vstack([
-            to_coefs(label, degree)
-            for label in train_labels
-        ])
-        test_poly = np.vstack([
-            to_coefs(label, degree)
-            for label in test_labels
-        ])
-        poly_labels[degree] = (train_poly, test_poly)
-    return poly_labels[degree]
-
 
 def create_model(
     ensemble_size: int,
