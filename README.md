@@ -1,6 +1,8 @@
 # NNSS
 MA 390 Rsrch Proj in Industrial Math - SPR 2022 
 
+![](https://raw.githubusercontent.com/danielwilczak101/NNSS/main/images/FancyUQGraph.png)
+
 OSTI download link for data: https://www.osti.gov/dataexplorer/biblio/dataset/1479489
 
 CalTech download link for data: https://data.caltech.edu/records/1103
