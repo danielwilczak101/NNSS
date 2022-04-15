@@ -9,11 +9,11 @@ import os.path
 import h5py
 
 
-from functions import to_coefs, to_labels
-#from use import models, test_images, test_labels
+from functions import to_coefs, to_labels, normalize, unnormalize, renormalize, get_poly_labels
 
 print("Loading")
 hf = h5py.File('dataset/dataset_raw.h5', 'r')
+
 
 images = hf['images'][:200]
 labels = hf['spectra'][:200]
@@ -25,22 +25,11 @@ train_images, test_images, train_labels, test_labels = train_test_split(
     test_size=0.2,
 )
 
+train_images, images_mean, images_deviation = normalize(train_images)
+train_labels, labels_mean, labels_deviation = normalize(train_labels)
+
+
 poly_labels = {}
-
-
-def get_poly_labels(degree: int):
-    if degree not in poly_labels:
-        poly_labels.clear()
-        train_poly = np.vstack([
-            to_coefs(label, degree)
-            for label in train_labels
-        ])
-        test_poly = np.vstack([
-            to_coefs(label, degree)
-            for label in test_labels
-        ])
-        poly_labels[degree] = (train_poly, test_poly)
-    return poly_labels[degree]
 
 
 degree = 6
@@ -50,16 +39,9 @@ degree = 6
 # for index in range(3, 7)]
 
 is_poly_augmented = False
-
-models = [tf.keras.models.load_model(f"models/{'no_' * (1 - is_poly_augmented)}poly_models/14-{index}.h5")
+# f"models/{'no_' * (1 - is_poly_augmented)}poly_models/14-{index}.h5")
+models = [tf.keras.models.load_model(f"models/2-{index}.h5")
           for index in range(5)]
-
-
-def as_labels(coefs_or_labels):
-    if is_poly_augmented:
-        return to_labels(coefs_or_labels)
-    else:
-        return coefs_or_labels
 
 
 '''
@@ -73,12 +55,20 @@ for model in models:
     print(rmse)
 '''
 
-image_number = 5
+image_number = 10
 
 plt.plot(test_labels[image_number], label="Actual")
 
 model_labels = np.vstack([
-    model(test_images[image_number].reshape(1, 64, 64, 3))[0]
+    unnormalize(
+        model(renormalize(
+            test_images[image_number].reshape(1, 64, 64, 3),
+            images_mean,
+            images_deviation,
+        ))[0],
+        labels_mean,
+        labels_deviation,
+    )
     for model in models
 ])
 

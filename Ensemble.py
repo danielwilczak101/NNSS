@@ -191,25 +191,14 @@ class Ensemble:
                            networks, layers, neurons, epochs)
 
 
-"""ensemble = Ensemble(
-    split=[.2],
-    poly_aug=[1],
-    poly_degree=[12, 18],
-    network=[1, 3, 5],
-    layers=[1, 3],
-    neuron=[512, 1028],
-    epochs=[2]
-)"""
-
-
 ensemble = Ensemble(
     split=[.2],
     poly_aug=[0],
     poly_degree=[12, 18],
-    network=[5],
+    network=[2],
     layers=[3],
     neuron=[2056],
-    epochs=[3]
+    epochs=[1]
 )
 
-ensemble.run(2)
+ensemble.run(1)
