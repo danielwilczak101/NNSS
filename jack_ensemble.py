@@ -15,8 +15,8 @@ print("Loading")
 hf = h5py.File('dataset/dataset_raw.h5', 'r')
 
 
-images = hf['images'][:200]
-labels = hf['spectra'][:200]
+images = hf['images']
+labels = hf['spectra']
 
 train_images, test_images, train_labels, test_labels = train_test_split(
     images,
@@ -41,7 +41,7 @@ degree = 6
 is_poly_augmented = False
 # f"models/{'no_' * (1 - is_poly_augmented)}poly_models/14-{index}.h5")
 models = [tf.keras.models.load_model(f"models/2-{index}.h5")
-          for index in range(5)]
+          for index in range(1)]
 
 
 '''
@@ -55,9 +55,9 @@ for model in models:
     print(rmse)
 '''
 
-image_number = 10
+image_number = 2000
 
-plt.plot(test_labels[image_number], label="Actual")
+plt.plot(unnormalize(test_labels[image_number], labels_mean, labels_deviation), label="Actual")
 
 model_labels = np.vstack([
     unnormalize(

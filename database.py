@@ -3,8 +3,8 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, 
 
 class Database:
 
-    def __init__(self):
-        engine = create_engine('sqlite:///database.db')
+    def __init__(self, file_name="database.db"):
+        engine = create_engine(f'sqlite:///{file_name}')
         meta = MetaData()
         self.table_parameters = Table(
             'parameters', meta,

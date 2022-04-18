@@ -64,7 +64,7 @@ def normalize(x):
     testing = unnormalize(testing, mean, deviation)
     """
     mean = np.mean(x, axis=0)
-    deviation = np.std(x, axis=0)
+    deviation = np.std(x, axis=0) / 3
     return renormalize(x, mean, deviation), mean, deviation
 
 
