@@ -11,7 +11,12 @@ class Dataset:
     tested using the metal oxide dataset but may be able to used for 
     a varity of datasets if they are .h5 files."""
 
-    def __init__(self, file_name='dataset/dataset_raw.h5'):
+    def __init__(self, file_name='dataset/dataset_raw.h5', size: int = None):
+        """
+        Args:
+            file-name: File name that the data is stored in. This file mist be a .h5 file.
+            size: How much of the dataset you want to grab.
+        """
         # Variables used for triggering dataset changes.
         self.current_split_percentage = 0
         self.current_poly_degree = 0
@@ -19,8 +24,8 @@ class Dataset:
 
         # Orginal unsplit data.
         hf = h5py.File(file_name, 'r')
-        self.images = hf['images']
-        self.labels = hf['spectra']
+        self.images = hf['images'][:size]
+        self.labels = hf['spectra'][:size]
 
         # Current data that is used in the model.
         self.training_images, self.training_labels = None, None

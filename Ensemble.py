@@ -47,11 +47,11 @@ class Ensemble:
 
             if poly_aug == 0:
                 # For non poly augmented data
-                model.add(layers.Dense(220, activation='sigmoid'))
+                model.add(layers.Dense(220, activation='tanh'))
             else:
                 # Poly augmented data. The addition of one is to componsate for
                 # the a in a + a1x + a2x^2 + an^n
-                model.add(layers.Dense(poly_degree + 1, activation='sigmoid'))
+                model.add(layers.Dense(poly_degree + 1, activation='tanh'))
 
             # Complile and fit
             model.compile(
@@ -59,7 +59,7 @@ class Ensemble:
                 loss='mse',
                 metrics=[
                     "mae",
-                    tf.keras.metrics.RootMeanSquaredError()
+                    tf.keras.metrics.RootMeanSquaredError(),
                 ]
             )
 
@@ -80,46 +80,32 @@ class Ensemble:
             self.database.save_epoch(
                 data.history, epochs, parameter_id, model_id)
 
-    def run(self, limit):
+    def run(self):
         """Runs the entire ensembled research based on preset
         combination parameters."""
 
         print(f"Number of combinations: {len(self.combinations)}")
 
         for id, combination in enumerate(self.combinations):
-            if id < limit:
-                print(f"Current combination: {combination}")
-                split, poly_aug, poly_degree, networks, layers, neurons, epochs = combination
+            print(f"Current combination: {combination}")
+            split, poly_aug, poly_degree, networks, layers, neurons, epochs = combination
 
-                if id == 0:
-                    # For the first iteration set the poly augmentation varibales
-                    # and degree since these are needed for the check split.
-                    self.dataset.current_poly_aug = poly_aug
-                    self.dataset.current_poly_degree = poly_degree
+            if id == 0:
+                # For the first iteration set the poly augmentation varibales
+                # and degree since these are needed for the check split.
+                self.dataset.current_poly_aug = poly_aug
+                self.dataset.current_poly_degree = poly_degree
 
-                # Checks are used to see if any augmentation variable have changed.
-                self.dataset.check_split(split, id)
-                self.dataset.check_poly_aug(poly_aug)
-                self.dataset.check_poly_degree(poly_degree, poly_aug)
+            # Checks are used to see if any augmentation variable have changed.
+            self.dataset.check_split(split, id)
+            self.dataset.check_poly_aug(poly_aug)
+            self.dataset.check_poly_degree(poly_degree, poly_aug)
 
-                # Save the combination to the database and recieve
-                # and return an id for saving epoch data.
-                parameter_id = self.database.save_parameters(split, poly_aug,
-                                                             poly_degree, networks,
-                                                             layers, neurons, epochs)
+            # Save the combination to the database and recieve
+            # and return an id for saving epoch data.
+            parameter_id = self.database.save_parameters(split, poly_aug,
+                                                         poly_degree, networks,
+                                                         layers, neurons, epochs)
 
-                self.model(parameter_id, poly_aug, poly_degree,
-                           networks, layers, neurons, epochs)
-
-
-ensemble = Ensemble(
-    split=[.2],
-    poly_aug=[0],
-    poly_degree=[12, 18],
-    network=[1],
-    layers=[3],
-    neuron=[2056],
-    epochs=[3]
-)
-
-ensemble.run(1)
+            self.model(parameter_id, poly_aug, poly_degree,
+                       networks, layers, neurons, epochs)
