@@ -47,11 +47,11 @@ class Ensemble:
 
             if poly_aug == 0:
                 # For non poly augmented data
-                model.add(layers.Dense(220, activation='tanh'))
+                model.add(layers.Dense(220))
             else:
                 # Poly augmented data. The addition of one is to componsate for
                 # the a in a + a1x + a2x^2 + an^n
-                model.add(layers.Dense(poly_degree + 1, activation='tanh'))
+                model.add(layers.Dense(poly_degree + 1))
 
             # Complile and fit
             model.compile(

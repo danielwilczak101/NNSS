@@ -1,8 +1,20 @@
 from numpy.polynomial import Polynomial
 
-import numpy as np
+import matplotlib.pyplot as plt
 import urllib.request
+import numpy as np
+import h5py
 import os
+
+
+def dataset_mean(file="dataset/dataset_raw.h5", label="spectra"):
+    """Mean line of the entire dataset labels. Must be a h5 file."""
+
+    print("Loading")
+    hf = h5py.File(file, 'r')
+    plt.plot(np.mean(hf[label], axis=0), label="global mean")
+    plt.title("Average of all Labels")
+    plt.show()
 
 
 def download(file_name, url):

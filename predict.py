@@ -49,12 +49,7 @@ def plot_models(image_number, model_number, number_of_models):
     plt.show()
 
 
-# 1 - 1
-# 3 - 5
-# 5 - 10
+image = 1
 
-# Image that will be used for everything
-image_number = 1
-
-plot_models(1, 1, 1)
-plot_models(1, 2, 1)
+plot_models(image, 1, 1)
+plot_models(image, 2, 1)
