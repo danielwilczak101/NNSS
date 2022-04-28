@@ -5,9 +5,11 @@ __pycache__/
 
 # C extensions
 *.so
+
+# Databases and datasets
 *.h5
-*.txt
 *.db
+*.npz
 
 # Distribution / packaging
 .Python

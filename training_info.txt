@@ -1,0 +1,24 @@
+Base:
+    Shape - (2,[2048,2048])
+    Final Epoch loss: 6.6401e-04 - mae: 0.0172 - root_mean_squared_error: 0.0258
+                val_loss: 0.0034 - val_mae: 0.0389 - val_root_mean_squared_error: 0.0579
+Model 1:   
+    Shape - (2,[256,512])
+    Final Epoch - loss: 8.8809e-04 - mae: 0.0202 - root_mean_squared_error: 0.0298
+                  val_loss: 0.0038 - val_mae: 0.0403 - val_root_mean_squared_error: 0.0613    
+Model 2:  
+    Shape - (1,[2028])
+    Final Epoch - loss: 0.0015 - mae: 0.0259 - root_mean_squared_error: 0.0381
+                  val_loss: 0.0042 - val_mae: 0.0441 - val_root_mean_squared_error: 0.0647  
+Model 3:   
+    Shape - (2,[1028,2048])
+    Final Epoch - loss: 6.5720e-04 - mae: 0.0172 - root_mean_squared_error: 0.0256
+                  val_loss: 0.0033 - val_mae: 0.0387 - val_root_mean_squared_error: 0.0572  
+Model 4:
+    Shape - (3, 1028,512,512)
+    Final Epoch - loss: 7.2197e-04 - mae: 0.0180 - root_mean_squared_error: 0.0269 
+                  val_loss: 0.0035 - val_mae: 0.0395 - val_root_mean_squared_error: 0.0591  
+Model 5:  
+    Shape - (5,[2048,512,256,512,512])
+    Final Epoch - loss: 6.2294e-04 - mae: 0.0163 - root_mean_squared_error: 0.0250
+                  val_loss: 0.0033 - val_mae: 0.0380 - val_root_mean_squared_error: 0.0577  
